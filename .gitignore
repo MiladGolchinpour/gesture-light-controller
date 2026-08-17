@@ -1,0 +1,8 @@
+.env
+.vscode
+
+run.sh
+deploy.sh
+
+.DS_Store
+__pycache__

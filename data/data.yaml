@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 4
+names: ['fist', 'one', 'two', 'palm']
+
+roboflow:
+  workspace: motionarcade
+  project: gesture-rec
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/motionarcade/gesture-rec/dataset/2

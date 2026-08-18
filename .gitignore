@@ -1,8 +1,13 @@
 .env
 .vscode
 
-run.sh
-deploy.sh
-
 .DS_Store
 __pycache__
+
+notes/
+config.py
+runs/
+
+data/train/
+data/valid/
+data/test/

@@ -9,7 +9,12 @@ def find_wemos():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.settimeout(2)
-    sock.sendto(b"DISCOVER_WEMOS", ("255.255.255.255", DISCOVERY_PORT))
+
+    try:
+        sock.sendto(b"DISCOVER_WEMOS", ("255.255.255.255", DISCOVERY_PORT))
+    except OSError:
+        sock.close()
+        return None
 
     try:
         data, addr = sock.recvfrom(64)
@@ -32,15 +37,18 @@ class WemosClient:
 
     def background_search(self):
         while self.running:
-            if self.base_url:
-                if not self.status():
-                    print("Wemos disconnected")
-                    self.base_url = None
-            else:
-                print("Searching Wemos...")
-                ip = find_wemos()
-                if ip:
-                    self.connect(ip)
+            try:
+                if self.base_url:
+                    if not self.status():
+                        print("Wemos disconnected")
+                        self.base_url = None
+                else:
+                    print("Searching Wemos...")
+                    ip = find_wemos()
+                    if ip:
+                        self.connect(ip)
+            except Exception as e:
+                print("Wemos background error:", e)
 
             time.sleep(2)
 

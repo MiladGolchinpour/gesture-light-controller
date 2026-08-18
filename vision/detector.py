@@ -12,7 +12,7 @@ gesture_controller = GestureController(confidence=0.75, buffer_size=3, cooldown=
 light_controller = LightController()
 wemos = WemosClient()
 
-cap = cv2.VideoCapture(1, cv2.CAP_AVFOUNDATION)
+cap = cv2.VideoCapture(0, cv2.CAP_AVFOUNDATION)
 
 if not cap.isOpened():
     raise RuntimeError("Cannot open webcam")
@@ -20,7 +20,7 @@ if not cap.isOpened():
 while True:
     ret, frame = cap.read()
     if not ret:
-        break
+        continue
 
     results = model.predict(frame, conf=0.7, verbose=False)
     annotated = results[0].plot()
@@ -31,15 +31,8 @@ while True:
     else:
         status = "WEMOS: SEARCHING..."
 
-    cv2.putText(
-        annotated,
-        status,
-        (20, 40),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        1,
-        (0,255,0) if wemos.base_url else (0,0,255),
-        2
-    )
+    cv2.putText(annotated, status, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                (0,255,0) if wemos.connected else (0,0,255), 2)
 
     if len(boxes):
         idx = boxes.conf.argmax()
